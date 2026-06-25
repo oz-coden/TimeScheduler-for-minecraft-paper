@@ -31,7 +31,7 @@ public class ScheduleCommand implements TabExecutor {
         // \schedule get <target> <schedule-type>
         // \schedule set <target> <schedule-type> <time> <messages>
         // \schedule remove <id>
-        ScheduleCommandType commandType = null;
+        ScheduleCommandType commandType;
         String commandTarget;
         ScheduleType scheduleType;
         Long time = null;
