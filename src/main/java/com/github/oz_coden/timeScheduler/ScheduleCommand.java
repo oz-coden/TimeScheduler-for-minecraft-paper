@@ -58,32 +58,21 @@ public class ScheduleCommand implements TabExecutor {
             commandTarget = null;
         }
         if (args.length >= 3) {
-            switch (args[2].toLowerCase()) {
-                case "real":
-                    scheduleType = ScheduleType.REAL;
-                    break;
-                case "game":
-                    scheduleType = ScheduleType.IN_GAME;
-                    break;
-                case "all":
-                    scheduleType = ScheduleType.NONE;
-                    break;
-                default:
-                    scheduleType = null;
-            }
+            scheduleType = switch (args[2].toLowerCase()) {
+                case "real" -> ScheduleType.REAL;
+                case "game" -> ScheduleType.IN_GAME;
+                case "all" -> ScheduleType.NONE;
+                default -> null;
+            };
         } else {
             scheduleType = null;
         }
         if (args.length >= 4) {
-            Boolean isTick = null;
-            switch (scheduleType) {
-                case REAL:
-                    isTick = false;
-                    break;
-                case IN_GAME:
-                    isTick = true;
-                    break;
-            }
+            Boolean isTick = switch (scheduleType) {
+                case REAL -> false;
+                case IN_GAME -> true;
+                default -> null;
+            };
             time = (isTick == null ? 0 : parseTime(isTick, args[3]));
         }
         if (args.length >= 5) {
@@ -95,7 +84,6 @@ public class ScheduleCommand implements TabExecutor {
             return false;
         }
 
-        boolean isSenderPlayer = (sender instanceof Player);
         String senderName = sender.getName().toLowerCase();
         List<ScheduledTask> tasks;
         List<ScheduledTask> list;
@@ -169,7 +157,6 @@ public class ScheduleCommand implements TabExecutor {
                 int hours;
                 int minutes;
                 int seconds;
-                int ticks;
                 switch (scheduleType) {
                     case REAL:
                         days = (int) Math.floor((double) left / (24L * 60L * 60L * 1000L));
@@ -180,9 +167,8 @@ public class ScheduleCommand implements TabExecutor {
                         left = left - minutes * (60L * 1000L);
                         seconds = (int) Math.floor((double) left / (1000L));
                         left = left - seconds * (1000L);
-                        ticks = (int) Math.floor((double) left / (50L));
 
-                        time += System.currentTimeMillis();
+                        targetTime += System.currentTimeMillis();
                         sender.sendMessage(Component.text("[SCHEDULER SET] 現実時間で " + days + "日" + hours + "時間" + minutes + "分" + seconds + "秒後にスケジュールを設定しました。", NamedTextColor.GREEN));
                         break;
                     case IN_GAME:
@@ -193,7 +179,7 @@ public class ScheduleCommand implements TabExecutor {
                                 ? ((Player) sender).getWorld().getFullTime()
                                 : plugin.getServer().getWorlds().get(0).getFullTime();
 
-                        time += currentTime;
+                        targetTime += currentTime;
                         sender.sendMessage(Component.text("[SCHEDULER SET] ゲーム内時間で " + days + " 日と" + left+ "TICK後にスケジュールを設定しました。", NamedTextColor.GREEN));
                         break;
                     default:
@@ -201,7 +187,7 @@ public class ScheduleCommand implements TabExecutor {
                         return false;
                 }
 
-                ScheduledTask task = new ScheduledTask(senderName.equalsIgnoreCase("CONSOLE".toLowerCase()) ? "@sender" : senderName.replace("CONSOLE".toLowerCase(), "@server"), scheduleType, commandTarget, time, message);
+                ScheduledTask task = new ScheduledTask(senderName.equalsIgnoreCase("CONSOLE".toLowerCase()) ? "@sender" : senderName.replace("CONSOLE".toLowerCase(), "@server"), scheduleType, commandTarget, targetTime, message);
                 plugin.addTask(task);
                 return true;
         }
@@ -243,7 +229,7 @@ public class ScheduleCommand implements TabExecutor {
 
             if (timeInput.matches(".*\\d$")) {
                 List<String> units = List.of("d", "h", "m", "s", "t");
-                ;
+
 
                 return units.stream().map(unit -> timeInput + unit).filter(suggestion -> {
                     String lastUnit = suggestion.substring(suggestion.length() - 1);
