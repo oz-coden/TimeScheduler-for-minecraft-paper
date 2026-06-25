@@ -166,7 +166,6 @@ public class ScheduleCommand implements TabExecutor {
                         minutes = (int) Math.floor((double) left / (60L * 1000L));
                         left = left - minutes * (60L * 1000L);
                         seconds = (int) Math.floor((double) left / (1000L));
-                        left = left - seconds * (1000L);
 
                         targetTime += System.currentTimeMillis();
                         sender.sendMessage(Component.text("[SCHEDULER SET] 現実時間で " + days + "日" + hours + "時間" + minutes + "分" + seconds + "秒後にスケジュールを設定しました。", NamedTextColor.GREEN));
