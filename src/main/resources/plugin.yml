@@ -1,0 +1,16 @@
+name: TimeScheduler
+version: '${version}'
+
+main: com.github.oz_coden.timeScheduler.TimeScheduler
+api-version: '1.20'
+load: POSTWORLD
+
+authors: [ oz-coden ]
+
+commands:
+  schedule:
+    description: To set, get, remove schedule command.
+    usage: /schedule <get | set | remove> <target> <schedule-type> <time> <messages>
+  timesignal:
+    description: To set time signal is on / off.
+    usage: /timesignal <true | false | toggle>
