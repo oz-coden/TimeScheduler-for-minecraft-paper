@@ -15,6 +15,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -51,6 +52,13 @@ public class ScheduleCommand implements TabExecutor {
                     sender.sendMessage(Component.text("[SCHEDULER] 不明なモードです： " + args[0], NamedTextColor.RED));
                     return false;
             }
+        } else {
+            sender.sendMessage(Component.text("[SCHEDULER] 引数が足りません: " + label, NamedTextColor.RED));
+            return false;
+        }
+        if ((args.length < 2 && commandType == ScheduleCommandType.REMOVE) || (args.length < 5 && commandType == ScheduleCommandType.SET)) {
+            sender.sendMessage(Component.text("[SCHEDULER] 引数が足りません: " + label, NamedTextColor.RED));
+            return false;
         }
         if (args.length >= 2) {
             commandTarget = args[1];
@@ -68,7 +76,7 @@ public class ScheduleCommand implements TabExecutor {
             scheduleType = null;
         }
         if (args.length >= 4) {
-            Boolean isTick = switch (scheduleType) {
+            Boolean isTick = switch (Objects.requireNonNull(scheduleType)) {
                 case REAL -> false;
                 case IN_GAME -> true;
                 default -> null;
@@ -79,10 +87,7 @@ public class ScheduleCommand implements TabExecutor {
             message = String.join(" ", Arrays.copyOfRange(args, 4, args.length));
         }
 
-        if (args.length == 0 || (args.length < 2 && commandType == ScheduleCommandType.REMOVE) || (args.length < 5 && commandType == ScheduleCommandType.SET)) {
-            sender.sendMessage(Component.text("[SCHEDULER] 引数が足りません: " + label, NamedTextColor.RED));
-            return false;
-        }
+
 
         String senderName = sender.getName().toLowerCase();
         List<ScheduledTask> tasks;
