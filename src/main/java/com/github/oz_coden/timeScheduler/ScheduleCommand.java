@@ -140,11 +140,10 @@ public class ScheduleCommand implements TabExecutor {
                         if (sender.isOp() || task.getRegister().equalsIgnoreCase(senderName) || task.getTarget().equalsIgnoreCase(senderName)) {
                             sender.sendMessage(Component.text("[SCHEDULER REMOVE] スケジュールを削除しました。", NamedTextColor.GREEN));
                             tasks.remove(task);
-                            return true;
                         } else {
                             sender.sendMessage(Component.text("[SCHEDULER REMOVE] 管理者権限がない場合、削除できません。", NamedTextColor.RED));
-                            return true;
                         }
+                        return true;
                     }
                 }
 
