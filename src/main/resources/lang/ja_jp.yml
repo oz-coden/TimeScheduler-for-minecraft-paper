@@ -1,0 +1,27 @@
+plugin:
+  prefix: "[TIMESCHEDULER]"
+  enabled: "TimeSchedulerを有効化中..."
+  disabled: "TimeSchedulerを無効化中..."
+
+schedule-command:
+  prefix: "[SCHEDULE]"
+  unknown-mode: "不明なモードです: %mode"
+  not-enough-args: "引数が足りません: %label"
+  no-schedule-set: "現在設定されているスケジュールはありません。"
+  need-op-permission: "管理者権限が必要です。"
+  no-match-schedule: "条件に合致したスケジュールはありません。"
+  world-time: "ワールド時間 %tick tick後 (%time)"
+  get-match-schedule: "[%type] 宛先: %target, 内容: %message, 日時: %time, ID: %id"
+  remove-schedule: "スケジュールを削除しました。"
+  not-found-schedule-id: "当てはまるスケジュールIDを持つスケジュールが見つかりませんでした。"
+  need-positive-int: "指定する時間は正の整数である必要があります。"
+  set-schedule-real: "現実時間で %days 日 %hours 時間 %minutes 分 %seconds 秒後にスケジュールを設定しました。"
+  set-schedule-game: "ゲーム内時間で %days 日 %ticks tick後にスケジュールを設定を設定しました。"
+  need-correct-type: "スケジュールタイプには、'real' または 'game' を指定してください。"
+
+timesignal-command:
+  prefix: "[TIMESIGNAL]"
+  message: "現在時刻は %h 時です。"
+  current-signal: "時報は %bool に設定されています。"
+  set-new-signal-mode: "時報は %bool に設定されました。"
+  need-boolean: "'true'か'false'を指定してください。"

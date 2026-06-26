@@ -1,0 +1,27 @@
+plugin:
+  prefix: "[TIMESCHEDULER]"
+  enabled: "Enabling TimeScheduler..."
+  disabled: "Disabling TimeScheduler..."
+
+schedule-command:
+  prefix: "[SCHEDULE]"
+  unknown-mode: "Unknown mode: %mode"
+  not-enough-args: "Not enough arguments: %label"
+  no-schedule-set: "There are currently no scheduled events."
+  need-op-permission: "You need administrator permissions to do it."
+  no-match-schedule: "No schedules match the given conditions."
+  world-readable-time: "World Time %tick tick later (%time)"
+  get-match-schedule: "[%type] To: %target, Message: %message, At: %time, ID: %id"
+  remove-schedule: "The schedule has been deleted."
+  not-found-schedule-id: "No schedule with the matching schedule ID was found."
+  need-positive-int: "The specified time must be a positive integer."
+  set-schedule-real: "Schedule set for %days days, %hours hours, %minutes minutes, and %seconds seconds in real time."
+  set-schedule-game: "Schedule set for %days days and %ticks ticks in game time."
+  need-correct-type: "Please specify either 'real' or 'game' for the schedule type."
+
+timesignal-command:
+  prefix: "[TIMESIGNAL]"
+  notification-message: "Current Time is %h o'clock."
+  current-signal-mode: "The time signal is set to %bool."
+  set-new-signal-mode: "The time signal has been set to %bool."
+  need-boolean: "Please specify either 'true' or 'false'."
