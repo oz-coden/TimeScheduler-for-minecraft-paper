@@ -12,7 +12,6 @@ public class ScheduledTask {
     private final long targetTime;
     private final String message;
 
-    // 新しくスケジュールを作るとき用のコンストラクタ
     public ScheduledTask(String register, ScheduleType type, String target, @NotNull Long targetTime, String message) {
         this.id = UUID.randomUUID();
         this.register = register;
