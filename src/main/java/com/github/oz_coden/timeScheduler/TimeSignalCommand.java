@@ -18,26 +18,24 @@ public class TimeSignalCommand  implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length == 0) {
-            sender.sendMessage("[TIMESIGNAL] 時報は" + plugin.getTimeSignal() + "に設定されています。");
-            return true;
+            String str = LangManager.getString("timesignal-command.current-signal-mode").replace("%bool", String.valueOf(plugin.getTimeSignal()));
+            sender.sendMessage(LangManager.getWithCustom(CommandType.TIMESIGNAL, MessageType.COMMAND, str));
         } else {
             if (args[0].equalsIgnoreCase("true")) {
                 plugin.setTimeSignal(true);
-                sender.sendMessage("[TIMESIGNAL] 時報はtrueに設定されました。");
-                return true;
             } else if (args[0].equalsIgnoreCase("false")) {
                 plugin.setTimeSignal(false);
-                sender.sendMessage("[TIMESIGNAL] 時報はfalseに設定されました。");
-                return true;
             } else if (args[0].equalsIgnoreCase("toggle")) {
                 plugin.setTimeSignal(!plugin.getTimeSignal());
-                sender.sendMessage("[TIMESIGNAL] 時報は" + plugin.getTimeSignal() + "に設定されました。");
-                return true;
             } else {
-                sender.sendMessage("[TIMESIGNAL] trueかfalseを指定してください。");
+                sender.sendMessage(LangManager.get(CommandType.TIMESIGNAL, MessageType.COMMAND, "timesignal-command.need-boolean", sender));
                 return false;
             }
+
+            String str = LangManager.getString("timesignal-command.set-new-signal-mode").replace("%bool", String.valueOf(plugin.getTimeSignal()));
+            sender.sendMessage(LangManager.getWithCustom(CommandType.TIMESIGNAL, MessageType.COMMAND, str));
         }
+        return true;
     }
 
     @Override

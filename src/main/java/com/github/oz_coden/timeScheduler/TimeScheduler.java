@@ -1,5 +1,6 @@
 package com.github.oz_coden.timeScheduler;
 
+import net.kyori.adventure.text.TextReplacementConfig;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -36,17 +37,28 @@ public final class TimeScheduler extends JavaPlugin {
 
         saveDefaultConfig();
 
+        int defaultVersion = 2;
+        int serverVersion = getConfig().getInt("version", 0);
+        if (serverVersion < defaultVersion) {
+            getConfig().options().copyDefaults(true);
+            getConfig().set("version", defaultVersion);
+            saveConfig();
+            getLogger().info("Update detected...\ntimescheduler\\config.yml updated.");
+        }
+
+        LangManager.load(plugin);
         setUpSchedulerAndTimeSignal();
         Objects.requireNonNull(getCommand("schedule")).setExecutor(new ScheduleCommand());
         Objects.requireNonNull(getCommand("timesignal")).setExecutor(new TimeSignalCommand());
 
-        getLogger().info("Enabling TimeScheduler...");
+
+        getLogger().info(LangManager.get(CommandType.PLUGIN, MessageType.MESSAGE, "plugin.enabled").toString());
     }
 
     @Override
     public void onDisable() {
         saveConfig();
-        getLogger().info("Disabling TimeScheduler...");
+        getLogger().info(LangManager.get(CommandType.PLUGIN, MessageType.MESSAGE, "plugin.disabled").toString());
     }
 
     private void setUpSchedulerAndTimeSignal() {
@@ -122,17 +134,15 @@ public final class TimeScheduler extends JavaPlugin {
                     if (shouldExecute) {
                         switch (task.getTarget()) {
                             case "@server":
-                                getLogger().info( "[SCHEDULER] " + task.getMessage());
+                                getLogger().info(LangManager.getWithCustom(CommandType.SCHEDULER, MessageType.EXECUTED, task.getMessage()).toString());
                                 break;
                             case "@a":
-                                Component msg = Component.text("[SCHEDULER] ", NamedTextColor.GOLD)
-                                        .append(Component.text(task.getMessage(), NamedTextColor.WHITE));
-                                Bukkit.broadcast(msg);
+                                Bukkit.broadcast(LangManager.getWithCustom(CommandType.SCHEDULER, MessageType.EXECUTED, task.getMessage()));
                                 break;
                             default:
                                 Player target = getServer().getPlayer(task.getTarget());
                                 if (target != null) {
-                                    target.sendMessage("[SCHEDULER] " + task.getMessage());
+                                    target.sendMessage(LangManager.getWithCustom(CommandType.SCHEDULER, MessageType.EXECUTED, task.getMessage()));
                                 }
                         }
                         iterator.remove();
@@ -148,10 +158,8 @@ public final class TimeScheduler extends JavaPlugin {
                     Calendar now = Calendar.getInstance();
                     int currentHour = now.get(Calendar.HOUR_OF_DAY);
                     if (currentHour != lastHour) {
-                        Component timeMsg = Component.text("[TIMESIGNAL] 現在時刻は ", NamedTextColor.AQUA)
-                                .append(Component.text(currentHour + "時", NamedTextColor.YELLOW))
-                                .append(Component.text(" です。", NamedTextColor.AQUA));
-                        Bukkit.broadcast(timeMsg);
+                        TextReplacementConfig c = TextReplacementConfig.builder().matchLiteral("%h").replacement(String.valueOf(currentHour)).build();
+                        Bukkit.broadcast(LangManager.get(CommandType.TIMESIGNAL, MessageType.EXECUTED, "timesignal-command.notification-message").replaceText(c));
                         lastHour = currentHour;
                     }
 

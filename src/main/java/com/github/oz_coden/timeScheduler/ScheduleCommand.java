@@ -1,6 +1,7 @@
 package com.github.oz_coden.timeScheduler;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -49,15 +50,18 @@ public class ScheduleCommand implements TabExecutor {
                     commandType = ScheduleCommandType.REMOVE;
                     break;
                 default:
-                    sender.sendMessage(Component.text("[SCHEDULER] 不明なモードです： " + args[0], NamedTextColor.RED));
+                    TextReplacementConfig c = TextReplacementConfig.builder().matchLiteral("%mode").replacement(args[0]).build();
+                    sender.sendMessage(LangManager.get(CommandType.SCHEDULER, MessageType.ERROR, "schedule-command.unknown-mode", sender).replaceText(c));
                     return false;
             }
         } else {
-            sender.sendMessage(Component.text("[SCHEDULER] 引数が足りません: " + label, NamedTextColor.RED));
+            TextReplacementConfig c = TextReplacementConfig.builder().matchLiteral("%label").replacement(label).build();
+            sender.sendMessage(LangManager.get(CommandType.SCHEDULER, MessageType.ERROR, "schedule-command.not-enough-args", sender).replaceText(c));
             return false;
         }
         if ((args.length < 2 && commandType == ScheduleCommandType.REMOVE) || (args.length < 5 && commandType == ScheduleCommandType.SET)) {
-            sender.sendMessage(Component.text("[SCHEDULER] 引数が足りません: " + label, NamedTextColor.RED));
+            TextReplacementConfig c = TextReplacementConfig.builder().matchLiteral("%label").replacement(label).build();
+            sender.sendMessage(LangManager.get(CommandType.SCHEDULER, MessageType.ERROR, "schedule-command.not-enough-args", sender).replaceText(c));
             return false;
         }
         if (args.length >= 2) {
@@ -97,11 +101,11 @@ public class ScheduleCommand implements TabExecutor {
             case GET:
                 tasks = plugin.getTasks();
                 if (tasks.isEmpty()) {
-                    sender.sendMessage(Component.text("[SCHEDULER GET] 現在設定されているスケジュールはありません。", NamedTextColor.GREEN));
+                    sender.sendMessage(LangManager.get(CommandType.SCHEDULER, MessageType.COMMAND, "schedule-command.no-schedule-set", sender));
                     return true;
                 }
                 if (commandTarget != null && !sender.isOp() && !commandTarget.equalsIgnoreCase(senderName)) {
-                    sender.sendMessage(Component.text("[SCHEDULER GET] 管理者権限がない場合、他人のスケジュールを見ることはできません。", NamedTextColor.RED));
+                    sender.sendMessage(LangManager.get(CommandType.SCHEDULER, MessageType.ERROR, "schedule-command.need-op-permission", sender));
                     return true;
                 }
 
@@ -111,7 +115,7 @@ public class ScheduleCommand implements TabExecutor {
                         .toList();
 
                 if (list.isEmpty()) {
-                    sender.sendMessage(Component.text("[SCHEDULER GET] 条件に合致したスケジュールはありません。", NamedTextColor.GREEN));
+                    sender.sendMessage(LangManager.get(CommandType.SCHEDULER, MessageType.COMMAND, "schedule-command.no-match-schedule", sender));
                     return true;
                 }
 
@@ -123,13 +127,14 @@ public class ScheduleCommand implements TabExecutor {
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
                         readableTime = dateTime.format(formatter);
                     } else {
+
                         long currentTime = (sender instanceof Player)
                                 ? ((Player) sender).getWorld().getFullTime()
                                 : plugin.getServer().getWorlds().get(0).getFullTime();
-                        readableTime = "ワールド時間: " + (currentTime - item.getTargetTime()) + " Tick後 (" + item.getTargetTime() + ")";
+                        readableTime = LangManager.getString("schedule-command.world-time").replace("%tick", String.valueOf(item.getTargetTime() - currentTime)).replace("%time", String.valueOf(item.getTargetTime()));
                     }
-
-                    sender.sendMessage(Component.text("[SCHEDULER GET] [" + item.getType().toString().toUpperCase() + "] To: " + item.getTarget() + ", Message: " + item.getMessage() + ", At: " + readableTime + ", ID:" + item.getId(), NamedTextColor.GREEN));
+                    String str = LangManager.getString("schedule-command.get-match-schedule").replace("%type", item.getType().toString().toUpperCase()).replace("%target", item.getTarget()).replace("%message", item.getMessage()).replace("%time", readableTime).replace("%id", item.getId().toString());
+                    sender.sendMessage(LangManager.getWithCustom(CommandType.SCHEDULER, MessageType.COMMAND, str));
                 }
                 return true;
             case REMOVE:
@@ -138,20 +143,20 @@ public class ScheduleCommand implements TabExecutor {
                 for (ScheduledTask task : tasks) {
                     if (task.getId().toString().equalsIgnoreCase(commandTarget)) {
                         if (sender.isOp() || task.getRegister().equalsIgnoreCase(senderName) || task.getTarget().equalsIgnoreCase(senderName)) {
-                            sender.sendMessage(Component.text("[SCHEDULER REMOVE] スケジュールを削除しました。", NamedTextColor.GREEN));
+                            sender.sendMessage(LangManager.get(CommandType.SCHEDULER, MessageType.COMMAND, "schedule-command.remove-schedule", sender));
                             tasks.remove(task);
                         } else {
-                            sender.sendMessage(Component.text("[SCHEDULER REMOVE] 管理者権限がない場合、削除できません。", NamedTextColor.RED));
+                            sender.sendMessage(LangManager.get(CommandType.SCHEDULER, MessageType.ERROR, "schedule-command.need-op-permission", sender));
                         }
                         return true;
                     }
                 }
 
-                sender.sendMessage(Component.text("[SCHEDULER REMOVE] 当てはまるスケジュールIDを持つスケジュールが見つかりませんでした。", NamedTextColor.RED));
+                sender.sendMessage(LangManager.get(CommandType.SCHEDULER, MessageType.ERROR, "schedule-command.not-found-schedule-id", sender));
                 return true;
             case SET:
                 if (time < 0) {
-                    sender.sendMessage(Component.text("[SCHEDULER SET] 指定する時間は正の整数である必要があります。", NamedTextColor.RED));
+                    sender.sendMessage(LangManager.get(CommandType.SCHEDULER, MessageType.ERROR, "schedule-command.need-positive-int", sender));
                     return true;
                 }
 
@@ -172,7 +177,8 @@ public class ScheduleCommand implements TabExecutor {
                         seconds = (int) Math.floor((double) left / (1000L));
 
                         targetTime += System.currentTimeMillis();
-                        sender.sendMessage(Component.text("[SCHEDULER SET] 現実時間で " + days + "日" + hours + "時間" + minutes + "分" + seconds + "秒後にスケジュールを設定しました。", NamedTextColor.GREEN));
+                        String str_real = LangManager.getString("schedule-command.set-schedule-real").replace("%days", String.valueOf(days)).replace("%hours", String.valueOf(hours)).replace("%minutes", String.valueOf(minutes)).replace("%seconds", String.valueOf(seconds));
+                        sender.sendMessage(LangManager.getWithCustom(CommandType.SCHEDULER, MessageType.COMMAND, str_real));
                         break;
                     case IN_GAME:
                         days = (int) Math.floor((double) left / (24000L));
@@ -183,14 +189,16 @@ public class ScheduleCommand implements TabExecutor {
                                 : plugin.getServer().getWorlds().get(0).getFullTime();
 
                         targetTime += currentTime;
-                        sender.sendMessage(Component.text("[SCHEDULER SET] ゲーム内時間で " + days + " 日と" + left+ "TICK後にスケジュールを設定しました。", NamedTextColor.GREEN));
+                        String str_game = LangManager.getString("schedule-command.set-schedule-game").replace("%days", String.valueOf(days)).replace("%ticks", String.valueOf(left));
+                        sender.sendMessage(LangManager.getWithCustom(CommandType.SCHEDULER, MessageType.COMMAND, str_game));
                         break;
                     default:
-                        sender.sendMessage(Component.text("[SCHEDULER SET] スケジュールタイプには、'real' または 'game' を指定してください。", NamedTextColor.RED));
+
+                        sender.sendMessage(LangManager.get(CommandType.SCHEDULER, MessageType.ERROR, "schedule-command.need-correct-type", sender));
                         return false;
                 }
 
-                ScheduledTask task = new ScheduledTask(senderName.equalsIgnoreCase("CONSOLE".toLowerCase()) ? "@sender" : senderName.replace("CONSOLE".toLowerCase(), "@server"), scheduleType, commandTarget, targetTime, message);
+                ScheduledTask task = new ScheduledTask(senderName.equalsIgnoreCase("CONSOLE".toLowerCase()) ? "@server" : senderName, scheduleType, commandTarget, targetTime, message);
                 plugin.addTask(task);
                 return true;
         }
