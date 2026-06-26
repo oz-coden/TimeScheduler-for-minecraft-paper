@@ -51,14 +51,13 @@ public final class TimeScheduler extends JavaPlugin {
         Objects.requireNonNull(getCommand("schedule")).setExecutor(new ScheduleCommand());
         Objects.requireNonNull(getCommand("timesignal")).setExecutor(new TimeSignalCommand());
 
-
-        getLogger().info(LangManager.get(CommandType.PLUGIN, MessageType.MESSAGE, "plugin.enabled").toString());
+        Bukkit.getConsoleSender().sendMessage(LangManager.get(CommandType.PLUGIN, MessageType.MESSAGE, "plugin.enabled"));
     }
 
     @Override
     public void onDisable() {
         saveConfig();
-        getLogger().info(LangManager.get(CommandType.PLUGIN, MessageType.MESSAGE, "plugin.disabled").toString());
+        Bukkit.getConsoleSender().sendMessage(LangManager.get(CommandType.PLUGIN, MessageType.MESSAGE, "plugin.disabled"));
     }
 
     private void setUpSchedulerAndTimeSignal() {
@@ -134,7 +133,7 @@ public final class TimeScheduler extends JavaPlugin {
                     if (shouldExecute) {
                         switch (task.getTarget()) {
                             case "@server":
-                                getLogger().info(LangManager.getWithCustom(CommandType.SCHEDULER, MessageType.EXECUTED, task.getMessage()).toString());
+                                Bukkit.getConsoleSender().sendMessage(LangManager.getWithCustom(CommandType.SCHEDULER, MessageType.EXECUTED, task.getMessage()));
                                 break;
                             case "@a":
                                 Bukkit.broadcast(LangManager.getWithCustom(CommandType.SCHEDULER, MessageType.EXECUTED, task.getMessage()));

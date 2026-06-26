@@ -131,9 +131,9 @@ public class ScheduleCommand implements TabExecutor {
                         long currentTime = (sender instanceof Player)
                                 ? ((Player) sender).getWorld().getFullTime()
                                 : plugin.getServer().getWorlds().get(0).getFullTime();
-                        readableTime = LangManager.getString("schedule-command.world-time").replace("%tick", String.valueOf(item.getTargetTime() - currentTime)).replace("%time", String.valueOf(item.getTargetTime()));
+                        readableTime = LangManager.getString("schedule-command.world-time", sender).replace("%tick", String.valueOf(item.getTargetTime() - currentTime)).replace("%time", String.valueOf(item.getTargetTime()));
                     }
-                    String str = LangManager.getString("schedule-command.get-match-schedule").replace("%type", item.getType().toString().toUpperCase()).replace("%target", item.getTarget()).replace("%message", item.getMessage()).replace("%time", readableTime).replace("%id", item.getId().toString());
+                    String str = LangManager.getString("schedule-command.get-match-schedule", sender).replace("%type", item.getType().toString().toUpperCase()).replace("%target", item.getTarget()).replace("%message", item.getMessage()).replace("%time", readableTime).replace("%id", item.getId().toString());
                     sender.sendMessage(LangManager.getWithCustom(CommandType.SCHEDULER, MessageType.COMMAND, str));
                 }
                 return true;
@@ -177,7 +177,7 @@ public class ScheduleCommand implements TabExecutor {
                         seconds = (int) Math.floor((double) left / (1000L));
 
                         targetTime += System.currentTimeMillis();
-                        String str_real = LangManager.getString("schedule-command.set-schedule-real").replace("%days", String.valueOf(days)).replace("%hours", String.valueOf(hours)).replace("%minutes", String.valueOf(minutes)).replace("%seconds", String.valueOf(seconds));
+                        String str_real = LangManager.getString("schedule-command.set-schedule-real", sender).replace("%days", String.valueOf(days)).replace("%hours", String.valueOf(hours)).replace("%minutes", String.valueOf(minutes)).replace("%seconds", String.valueOf(seconds));
                         sender.sendMessage(LangManager.getWithCustom(CommandType.SCHEDULER, MessageType.COMMAND, str_real));
                         break;
                     case IN_GAME:
@@ -189,7 +189,7 @@ public class ScheduleCommand implements TabExecutor {
                                 : plugin.getServer().getWorlds().get(0).getFullTime();
 
                         targetTime += currentTime;
-                        String str_game = LangManager.getString("schedule-command.set-schedule-game").replace("%days", String.valueOf(days)).replace("%ticks", String.valueOf(left));
+                        String str_game = LangManager.getString("schedule-command.set-schedule-game", sender).replace("%days", String.valueOf(days)).replace("%ticks", String.valueOf(left));
                         sender.sendMessage(LangManager.getWithCustom(CommandType.SCHEDULER, MessageType.COMMAND, str_game));
                         break;
                     default:

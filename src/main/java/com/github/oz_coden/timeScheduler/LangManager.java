@@ -85,6 +85,18 @@ public class LangManager {
         return config.getString(key, key);
     }
 
+    public static String getString(String key, CommandSender sender) {
+        String locale = defaultLang;
+
+        if (sender instanceof Player) {
+            locale = ((Player) sender).locale().toString().toLowerCase();
+        }
+
+        FileConfiguration config = langMap.getOrDefault(locale, langMap.get(defaultLang));
+
+        return config.getString(key, key);
+    }
+
     public static TextComponent getWithCustom(CommandType commandType, MessageType messageType, String customMessage) {
         String locale = defaultLang;
 

@@ -18,7 +18,7 @@ public class TimeSignalCommand  implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length == 0) {
-            String str = LangManager.getString("timesignal-command.current-signal-mode").replace("%bool", String.valueOf(plugin.getTimeSignal()));
+            String str = LangManager.getString("timesignal-command.current-signal-mode", sender).replace("%bool", String.valueOf(plugin.getTimeSignal()));
             sender.sendMessage(LangManager.getWithCustom(CommandType.TIMESIGNAL, MessageType.COMMAND, str));
         } else {
             if (args[0].equalsIgnoreCase("true")) {
@@ -32,7 +32,7 @@ public class TimeSignalCommand  implements TabExecutor {
                 return false;
             }
 
-            String str = LangManager.getString("timesignal-command.set-new-signal-mode").replace("%bool", String.valueOf(plugin.getTimeSignal()));
+            String str = LangManager.getString("timesignal-command.set-new-signal-mode", sender).replace("%bool", String.valueOf(plugin.getTimeSignal()));
             sender.sendMessage(LangManager.getWithCustom(CommandType.TIMESIGNAL, MessageType.COMMAND, str));
         }
         return true;
