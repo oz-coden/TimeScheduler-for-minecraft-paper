@@ -110,14 +110,6 @@ public class LangManager {
         return Component.text(prefix, color).append(Component.text(" " + config.getString(key, key),NamedTextColor.WHITE));
     }
 
-    public static String getString(String key) {
-        String locale = defaultLang;
-
-        FileConfiguration config = langMap.getOrDefault(locale, langMap.get(defaultLang));
-
-        return config.getString(key, key);
-    }
-
     public static String getString(String key, CommandSender sender) {
         String locale = defaultLang;
 
