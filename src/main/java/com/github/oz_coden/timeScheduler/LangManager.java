@@ -9,6 +9,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,8 +49,38 @@ public class LangManager {
 
     private static void saveDefaultLang(TimeScheduler plugin, String langName) {
         File file = new File(plugin.getDataFolder(), "lang/" + langName + ".yml");
-        if (!file.exists() && plugin.getResource("lang/" + langName + ".yml") != null) {
-            plugin.saveResource("lang/" + langName + ".yml", false);
+        if (!file.exists()) {
+            if (plugin.getResource("lang/" + langName + ".yml") != null) {
+                plugin.saveResource("lang/" + langName + ".yml", false);
+            }
+            return;
+        }
+
+        try {
+            YamlConfiguration existingConfig = YamlConfiguration.loadConfiguration(file);
+
+            InputStream defConfigStream = plugin.getResource("lang/" + langName + ".yml");
+            if (defConfigStream != null) {
+                YamlConfiguration defaultConfig = YamlConfiguration.loadConfiguration(
+                        new InputStreamReader(defConfigStream, StandardCharsets.UTF_8)
+                );
+                boolean hasUpdated = false;
+
+                for (String key : defaultConfig.getKeys(true)) {
+                    if (!existingConfig.contains(key)) {
+                        existingConfig.set(key, defaultConfig.get(key));
+                        hasUpdated = true;
+                    }
+                }
+
+                if (hasUpdated) {
+                    existingConfig.save(file);
+                    plugin.getLogger().info(langName + ".yml was updated.");
+                }
+            }
+        } catch (Exception e) {
+            plugin.getLogger().warning("An error occurred while updating: " + langName);
+            e.fillInStackTrace();
         }
     }
 
