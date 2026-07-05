@@ -8,7 +8,7 @@ Japanese section is [available](#目次) in below this section.
 2. [Background of Development](#background-of-development)
 3. [Features](#features)
 4. [Usage](#usage)
-5. [Dependencies](#dependencies)
+5. [Requirements, Dependencies](#requirements-dependencies)
 6. [Installation](#installation)
 7. [Setting](#setting)
 8. [LICENSE](#license)
@@ -43,7 +43,7 @@ You can use commands in below:
 |/schedule remove &lt;id&gt;|Delete the configured schedule by specifying its ID. (You can identify the ID using "/schedule get".)|/schedule remove abbdf838-1066-07b8-bbc9-3dd5fa6362d3|
 |/timesignal &lt;true\|false\|toggle&gt;|Set time annoucements is enable or disable.|/timesignal toggle|
 
-## Dependencies
+## Requirements, Dependencies
 
 - Minecraft Paper Server 1.20 or newer  
 
